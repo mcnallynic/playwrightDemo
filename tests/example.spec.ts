@@ -12,10 +12,16 @@ test.only('selector test', async ({ page }) => {
   await page.getByRole('button', { name: 'Open Window' }).click();
   await page.locator('#bmwradio').check();
   //best practice, dont add waits
+
   //await page.waitForSelector('#bmwradio', { state: 'visible' });
   //await expect(page.getByRole('button', { name: 'Open Window' })).toBeVisible();
   await page.getByRole('button', { name: 'Open Window' });
   await page.locator('#checkbox-example-div').screenshot({ path: 'screenshots/screenshotFile1.png' });
+
+  //await page.waitForSelector('#bmwradio', { state: 'visible' });
+  //await expect(page.getByRole('button', { name: 'Open Window' })).toBeVisible();
+  //await page.getByRole('button', { name: 'Open Window' });
+
 });
 
 test('get started link', async ({ page }) => {
