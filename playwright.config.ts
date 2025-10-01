@@ -25,6 +25,7 @@ export default defineConfig({
   reporter: 'html',
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   outputDir: 'artifacts/',
+  timeout: 30000, // Sets a 60-second timeout for all tests
   use: {
     screenshot: 'only-on-failure',
     /* Base URL to use in actions like `await page.goto('/')`. */
@@ -38,7 +39,12 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      use: {
+        ...devices['Desktop Chrome'],
+        //viewport: { width: 1280, height: 720 }
+        isMobile: true
+      },
+
     },
 
     /*{
@@ -48,7 +54,11 @@ export default defineConfig({
 */
     {
       name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
+      use: {
+        ...devices['Desktop Safari'],
+        viewport: { width: 1280, height: 720 },
+      },
+
     },
 
     /* Test against mobile viewports. */
