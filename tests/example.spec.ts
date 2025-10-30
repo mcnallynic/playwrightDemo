@@ -1,14 +1,17 @@
-import { getPopperUtilityClass } from '@mui/base';
 import { test, expect } from '@playwright/test';
 
-test('has title', async ({ page }) => {
-  await page.goto('https://playwright.dev/');
+test.describe.only('initial', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('https://playwright.dev/');
+  });
+  test('has title', async ({ page }) => {
 
-  // Expect a title "to contain" a substring.
-  await expect(page).toHaveTitle(/Playwright/);
+    // Expect a title "to contain" a substring.
+    await expect(page).toHaveTitle(/Playwright/);
+  });
 });
 
-test('get started link', async ({ page }) => {
+test.skip('get started link', async ({ page }) => {
   await page.goto('https://playwright.dev/');
 
   // Click the get started link.
@@ -18,10 +21,29 @@ test('get started link', async ({ page }) => {
   await expect(page.getByRole('heading', { name: 'Installation' })).toBeVisible();
 });
 
-test('selector test', async ({ page }) => {
+test.fail('navigation', async ({ page }) => {
   await page.goto('https://www.letskodeit.com/practice');
   await page.getByRole('button', { name: 'Open Window' }).click();
-  await page.locator('#bmwradio').check();
+  await page.locator('#benzradio').check();
+  await page.locator('#checkbox-example-div').screenshot({ path: 'screenshots/screenshotFile1.png' });
+
+  // Go back to previous page
+  await page.goBack();
+
+  await page.goForward();
+
+});
+
+
+test('selector test', {
+  annotation: {
+    type: 'issue',
+    description: 'description',
+  },
+}, async ({ page }) => {
+  await page.goto('https://www.letskodeit.com/practice');
+  await page.getByRole('button', { name: 'Open Window' }).click();
+  await page.locator('#benzradio').check();
 
   //best practice, dont add waits
   //await page.waitForSelector('#bmwradio', { state: 'visible' });
@@ -36,7 +58,7 @@ test('selector test', async ({ page }) => {
 
 });
 
-/*test('Switching tabs and Windows Test', async ({ page }) => {
+test.fixme('Switching tabs and Windows Test', async ({ page }) => {
 
   await page.goto('https://www.letskodeit.com/practice');
 
@@ -47,11 +69,16 @@ test('selector test', async ({ page }) => {
 
   await newTab.waitForLoadState();
   console.log('New tab url: ', newTab.url());
-  await page.getByRole('textbox', { name: 'Search Course' }).fill('Course example');
+  await newTab.getByRole('textbox', { name: 'Search Course' }).fill('Course example');
 
-});*/
+});
+test.beforeEach(async ({ page, isMobile }) => {
+  test.fixme(isMobile, 'Home page not working in mobile yet');
 
-test('New tab test', async ({ page }) => {
+  await page.goto('https://www.letskodeit.com/practice');
+});
+test.only('tab test @slow', async ({ page }) => {
+
   await page.goto('https://www.letskodeit.com/practice');
   const newTab = page.waitForEvent('popup');
   await page.locator('#opentab').click();
@@ -59,23 +86,37 @@ test('New tab test', async ({ page }) => {
 
   await expect(popup).toHaveURL('https://www.letskodeit.com/courses');
   await popup.getByRole('textbox', { name: 'Search Course' }).fill('Course example');
+
 });
-
-
-test.only('iFrame example', async ({ page }) => {
+test.afterEach(async ({ page, isMobile }) => {
+  test.fixme(isMobile, 'Home page not working in mobile yet');
 
   await page.goto('https://www.letskodeit.com/practice');
+});
 
-  //get inside the iframe
-  const frame = page.frameLocator('iframe#courses-iframe');
+test.describe('group iframe & selector', {
+  tag: '@report',
+}, () => {
+  test('iFrame example', async ({ page }) => {
 
-  //locate the search input & type into it
-  await frame.locator('input[name="course"]').fill('Playwright automation test');
-  await page.screenshot({ path: 'screenshots/screenshotFile.png', fullPage: true });
+    await page.goto('https://www.letskodeit.com/practice');
 
-  //click the search button
-  await frame.locator('button.find-course').click();
-  await page.screenshot({ path: 'screenshots/screenshotFile2.png', fullPage: true });
+    //get inside the iframe
+    const frame = page.frameLocator('iframe#courses-iframe');
 
+    //locate the search input & type into it
+    await frame.locator('input[name="course"]').fill('Playwright automation test');
+    await page.screenshot({ path: 'screenshots/screenshotFile.png', fullPage: true });
+
+    //click the search button
+    await frame.locator('button.find-course').click();
+    await page.screenshot({ path: 'screenshots/screenshotFile2.png', fullPage: true });
+
+  });
+  test('selector test', async ({ page }) => {
+    await page.goto('https://www.letskodeit.com/practice');
+    await page.getByRole('button', { name: 'Open Window' }).click();
+    await page.locator('#benzradio').check();
+  });
 });
 
